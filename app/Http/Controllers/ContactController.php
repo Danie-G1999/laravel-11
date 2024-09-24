@@ -12,7 +12,11 @@ class ContactController extends Controller
      */
     public function index()
     {
-        //
+        $getData = Contact::find(1);
+        $getData->update(
+            ["name" => "Juan Daniel Guzman"]
+        );
+        // dd($getData);
     }
 
     /**
