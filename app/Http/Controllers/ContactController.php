@@ -12,11 +12,8 @@ class ContactController extends Controller
      */
     public function index()
     {
-        $getData = Contact::find(1);
-        $getData->update(
-            ["name" => "Juan Daniel Guzman"]
-        );
-        // dd($getData);
+        $contacts = Contact::orderByDesc('id')->get();
+        return view('contacts', ['contacts' => $contacts]);
     }
 
     /**
@@ -24,7 +21,7 @@ class ContactController extends Controller
      */
     public function create()
     {
-        //
+        return view('create');
     }
 
     /**
@@ -32,7 +29,27 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validamos
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+            'direction' => 'required|string|max:255',
+        ]);
+
+        // Creamos
+        Contact::create([
+            'name' => $request->input('name'),
+            'phone' => $request->input('phone'),
+            'email' => $request->input('email'),
+            'direction' => $request->input('direction'),
+        ]);
+
+        // Traemos todos los contactos
+        $contacts = Contact::orderByDesc('id')->get();
+
+        // Retornamos vista con datos
+        return view('contacts', compact('contacts'));
     }
 
     /**
@@ -40,7 +57,9 @@ class ContactController extends Controller
      */
     public function show(Contact $contact)
     {
-        //
+        $contact = Contact::find($contact->id);
+        return view('show', compact('contact'));
+        
     }
 
     /**
@@ -48,7 +67,8 @@ class ContactController extends Controller
      */
     public function edit(Contact $contact)
     {
-        //
+        // dd($contact);
+        return view('create', compact('contact'));
     }
 
     /**
@@ -64,6 +84,15 @@ class ContactController extends Controller
      */
     public function destroy(Contact $contact)
     {
-        //
+        // Eliminar el contacto
+        $contact = Contact::findOrFail($contact->id); // Reemplaza $contactId con el ID correcto
+        $contact->delete();
+
+        // Traemos todos los contactos
+        $contacts = Contact::orderByDesc('id')->get();
+
+        // Redirigir a la lista de contactos
+        return redirect()->route('contact.index');
+
     }
 }

@@ -8,4 +8,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('contact', ContactController::class);
+Route::resource('contact', ContactController::class)->names('contact');
