@@ -49,7 +49,11 @@ class ContactController extends Controller
         $contacts = Contact::orderByDesc('id')->get();
 
         // Retornamos vista con datos
-        return view('contacts', compact('contacts'));
+        // return view('contacts', compact('contacts'));
+        return redirect()->route('contact.index')->with([
+            'success' => 'Contacto creado con éxito.',
+            'contacts' => $contacts,
+        ]);
     }
 
     /**
@@ -76,7 +80,32 @@ class ContactController extends Controller
      */
     public function update(Request $request, Contact $contact)
     {
-        //
+        // Validamos
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+            'direction' => 'required|string|max:255',
+        ]);
+
+        // Actualizar los campos del contacto
+        $contact->name = $request->input('name');
+        $contact->phone = $request->input('phone');
+        $contact->email = $request->input('email');
+        $contact->direction = $request->input('direction');
+        // Actualiza otros campos según sea necesario
+
+        // Guardar los cambios en la base de datos
+        $contact->save();
+
+        // Traemos todos los contactos
+        $contacts = Contact::orderByDesc('id')->get();
+
+        return redirect()->route('contact.index')->with([
+            'success' => 'Contacto actualizado con éxito.',
+            'contacts' => $contacts,
+        ]);
+
     }
 
     /**

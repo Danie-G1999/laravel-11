@@ -19,6 +19,17 @@
 </style>
 <div class="container mt-5">
     <div class="row">
+        @if(session('success'))
+            <div class="alert alert-success col-12">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger col-12">
+                {{ session('error') }}
+            </div>
+        @endif
         @foreach ($contacts as $item)
             <div class="col-12 col-sm-6 col-md-4 mb-4">
                 <div class="card text-center" style="cursor: pointer;">
@@ -55,5 +66,12 @@
     </div>
 </div>
 
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        setTimeout(function() {
+            $(".alert").fadeOut("slow");
+        }, 5000);
+    });
+</script>
 @endsection
